@@ -1,4 +1,3 @@
-// main.js
 const { app, BrowserWindow, globalShortcut } = require('electron')
 const path = require('path')
 
@@ -40,41 +39,44 @@ function createWindow() {
       contextIsolation: true,
       sandbox: true
     },
-    // Remove window frame and controls
     frame: true,
     // Prevent creation of new windows
     nativeWindowOpen: false
   })
 
-  // Register keyboard shortcut
+  // Full screen shortcuts
   globalShortcut.register('F11', () => {
     const isFullScreen = win.isFullScreen()
     win.setFullScreen(!isFullScreen)
   })
-
-  // Alternative shortcut for macOS
   globalShortcut.register('CommandOrControl+F', () => {
     const isFullScreen = win.isFullScreen()
     win.setFullScreen(!isFullScreen)
   })
-
-  // ESC key to exit fullscreen (optional)
   globalShortcut.register('Escape', () => {
     if (win.isFullScreen()) {
       win.setFullScreen(false)
     }
   })
+ 
+  // Reload shortcuts
+  globalShortcut.register('F5', () => {
+    win.reload();
+  })
+  globalShortcut.register('CommandOrControl+R', () => {
+    win.reload();
+  })
+  globalShortcut.register('CommandOrControl+Q', () => {
+    app.quit();
+  })
 
-  // Load your website
+  // Load the website
   win.loadURL(getStartUrl())
 
   // Prevent new window creation from within the page
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
 
-  // Disable menu bar
   win.setMenu(null)
-
-  // Optional: Make it fullscreen
   win.setFullScreen(true)
 }
 
@@ -87,6 +89,18 @@ app.whenReady().then(() => {
     }
   })
 })
+
+
+/* Uncomment me to add credentials for basic auth 
+app.on('login', (event, webContents, request, authInfo, callback) => {
+  event.preventDefault();
+
+  let username='username'
+  let password='password'
+
+  callback(username, password);
+});
+*/
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
