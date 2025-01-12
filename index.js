@@ -44,31 +44,39 @@ function createWindow() {
     nativeWindowOpen: false
   })
 
+  let exitFullScreen = () => {
+    if (!win.isFocused()) return
+
+    win.setFullScreen(false)
+  }
+
+  let toggleFullScreen = () => {
+    if (!win.isFocused()) return
+
+    win.setFullScreen(!win.isFullScreen())
+  }
+  let reload = () => {
+    if (!win.isFocused()) return
+
+    win.reload()
+  }
+  let quit = () => {
+    if (!win.isFocused()) return
+
+    app.quit()
+  }
+
   // Full screen shortcuts
-  globalShortcut.register('F11', () => {
-    const isFullScreen = win.isFullScreen()
-    win.setFullScreen(!isFullScreen)
-  })
-  globalShortcut.register('CommandOrControl+F', () => {
-    const isFullScreen = win.isFullScreen()
-    win.setFullScreen(!isFullScreen)
-  })
-  globalShortcut.register('Escape', () => {
-    if (win.isFullScreen()) {
-      win.setFullScreen(false)
-    }
-  })
- 
+  globalShortcut.register('F11', toggleFullScreen)
+  globalShortcut.register('CommandOrControl+F', toggleFullScreen)
+  globalShortcut.register('Escape', exitFullScreen)
+
   // Reload shortcuts
-  globalShortcut.register('F5', () => {
-    win.reload();
-  })
-  globalShortcut.register('CommandOrControl+R', () => {
-    win.reload();
-  })
-  globalShortcut.register('CommandOrControl+Q', () => {
-    app.quit();
-  })
+  globalShortcut.register('F5', reload)
+  globalShortcut.register('CommandOrControl+R', reload)
+
+  // App termination shortcut
+  globalShortcut.register('CommandOrControl+Q', quit)
 
   // Load the website
   win.loadURL(getStartUrl())
